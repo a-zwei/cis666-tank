@@ -2,6 +2,7 @@ module Main where
 
 import Data.Array.IArray
 import Data.Function (on)
+import Data.Graph
 import Data.List (sortBy)
 
 data Item = Item { name :: String, weight :: Float, value :: Float }

@@ -9,13 +9,13 @@ import System.Random
 data State = State { us :: Array (Int, Int) Float }
   deriving (Read, Show, Eq)
 
+type UGraph = Gr () ()
+
 randomArray :: (Ix i, Random a) => (i, i) -> (a, a) -> Int -> Array i a
 randomArray bounds range seed = listArray bounds $ randomRs range g
   where g = mkStdGen seed
 
 sampleA = State $ randomArray ((1,1),(6,3)) (-0.5, 0.5) 1
-
-type UGraph = Gr () ()
 
 randomGraph :: Int -> Int -> Int -> UGraph
 randomGraph nodes edges seed = undir $ mkUGraph [1..nodes] $ take edges rEdges
@@ -62,5 +62,6 @@ dudt g s (node, color) = -(us s ! (node, color)) - fromIntegral
         noSameColorConnected =
           sum [cv g node j * (vs s ! (j, color)) | j <- nodeIxs s] - 1
 
---iterate :: State -> State
---iterate s = Map.mapWithKey f 
+iterate :: UGraph -> State -> State
+iterate g s = State $ array (bounds $ us s) (map updateU $ assocs (us s))
+  where updateU ((i, j), u) = ((i, j), u + dt * dudt g s (i, j))

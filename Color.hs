@@ -4,35 +4,59 @@ import Data.Array.IArray
 import Data.Function (on)
 import Data.Graph
 import Data.List (sortBy)
-
-data Item = Item { name :: String, weight :: Float, value :: Float }
-  deriving (Read, Show, Eq)
+import System.Random
 
 data State = State { us :: Array (Int, Int) Float }
   deriving (Read, Show, Eq)
 
-vs :: State -> Array (Int, Int) Bool
-vs s = amap (>= 0) (us s)
+randomArray :: (Ix i, Random a) => (i, i) -> (a, a) -> Int -> Array i a
+randomArray bounds range seed = listArray bounds $ randomRs range g
+  where g = mkStdGen seed
+
+sampleA = State $ randomArray ((1,1),(6,3)) (-0.5, 0.5) 1
+
+boolToInt True = 1
+boolToInt False = 0
+
+vs :: State -> Array (Int, Int) Int
+vs s = amap (boolToInt . (>= 0)) (us s)
+
+connected :: Graph -> Vertex -> Vertex -> Bool
+connected _ i j | i == j = False
+connected g i j = ((i, j) `elem` gvs) || ((j, i) `elem` gvs)
+  where gvs = edges g
+
+cv :: Graph -> Vertex -> Vertex -> Int
+cv g i j = boolToInt $ connected g i j
 
 rowBounds :: State -> (Int, Int)
-rowBounds s = (\((r0,_),(r1,_)) -> (r0, r1)) $ bounds (us s)
+rowBounds s = (\((i,_),(j,_)) -> (i, j)) $ bounds (us s)
 
 colBounds :: State -> (Int, Int)
-colBounds s = (\((_,c0),(_,c1)) -> (c0, c1)) $ bounds (us s)
+colBounds s = (\((_,i),(_,j)) -> (i, j)) $ bounds (us s)
 
-rows :: State -> [Int]
-rows = range . rowBounds
+rowIxs :: State -> [Int]
+rowIxs = range . rowBounds
 
-cols :: State -> [Int]
-cols = range . colBounds
+colIxs :: State -> [Int]
+colIxs = range . colBounds
 
---dudt :: State -> (Int, Int) -> Int
---dudt s (i, j) = 
+vertexVs :: State -> Int -> [Int]
+vertexVs s v = [vs s ! (v, c) | c <- colIxs s]
+
+colorVs s c = [vs s ! (v, c) | v <- rowIxs s]
+
+a = 10
+b = 1
+c = 20
+
+dudt :: Graph -> State -> (Int, Int) -> Float
+dudt g s (vertex, color) = -(us s ! (vertex, color)) - fromIntegral
+  (a * oneColorPerVertex + b * minimizeColor + c * noSameColorConnected)
+  where oneColorPerVertex = sum (vertexVs s vertex) - 1
+        minimizeColor = color - (fst $ colBounds s)
+        noSameColorConnected =
+          sum [cv g vertex j * (vs s ! (j, color)) | j <- rowIxs s] - 1
 
 --iterate :: State -> State
 --iterate s = Map.mapWithKey f 
-
-maxItems capacity items = floor (capacity / leastWeight)
-  where leastWeight = weight . head $ sortBy (compare `on` weight) items
-
-bitsForMax n = ceiling (log (n + 1) / log 2)

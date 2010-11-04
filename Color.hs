@@ -62,6 +62,9 @@ dudt g s (node, color) = -(us s ! (node, color)) - fromIntegral
         noSameColorConnected =
           sum [cv g node j * (vs s ! (j, color)) | j <- nodeIxs s] - 1
 
+energy :: UGraph -> State -> Float
+energy g s = 0
+
 iterate :: UGraph -> State -> State
 iterate g s = State $ array (bounds $ us s) (map updateU $ assocs (us s))
   where updateU ((i, j), u) = ((i, j), u + dt * dudt g s (i, j))

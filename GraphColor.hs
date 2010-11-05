@@ -1,9 +1,8 @@
-module Main where
+module GraphColor where
 
 import Data.Array.IArray
-import Data.Function (on)
 import Data.Graph.Inductive
-import Data.List (sortBy)
+import Data.List (delete, sortBy)
 import System.Random
 
 data State = State { us :: Array (Int, Int) Float }
@@ -28,8 +27,8 @@ boolToInt False = 0
 vs :: State -> Array (Int, Int) Int
 vs s = amap (boolToInt . (>= 0)) (us s)
 
-cv :: UGraph -> Node -> Node -> Int
-cv g i j = boolToInt $ j `elem` neighbors g i
+cv :: UGraph -> (Node, Node) -> Int
+cv g (i, j) = boolToInt $ j `elem` neighbors g i
 
 nodeBounds :: State -> (Int, Int)
 nodeBounds s = (\((i,_),(j,_)) -> (i, j)) $ bounds (us s)
@@ -60,10 +59,18 @@ dudt g s (node, color) = -(us s ! (node, color)) - fromIntegral
   where oneColorPerVertex = sum (nodeVs s node) - 1
         minimizeColor = color - (fst $ colorBounds s)
         noSameColorConnected =
-          sum [cv g node j * (vs s ! (j, color)) | j <- nodeIxs s] - 1
+          sum [cv g (node, j) * (vs s ! (j, color)) | j <- nodeIxs s] - 1
 
 energy :: UGraph -> State -> Float
-energy g s = 0
+energy g s = fromIntegral $ a * aTerm + b * bTerm + c * cTerm
+  where aTerm = sum [sum [(vs s ! (i, k)) * (vs s ! (i, j)) |
+          k <- delete j $ colorIxs s] + (vs s ! (i, j)) |
+            i <- nodeIxs s, j <- colorIxs s]
+        bTerm = sum [(j + 1) * (vs s ! (i, j)) |
+          i <- nodeIxs s, j <- colorIxs s]
+        cTerm = sum [sum [cv g (i, k) * (vs s ! (k, j)) * (vs s ! (i, j)) |
+          k <- delete i $ nodeIxs s] + (vs s ! (i, j)) |
+            i <- nodeIxs s, j <- colorIxs s]
 
 iterate :: UGraph -> State -> State
 iterate g s = State $ array (bounds $ us s) (map updateU $ assocs (us s))

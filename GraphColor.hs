@@ -8,7 +8,7 @@ import UGraph
 import Util
 
 a = 250 -- one color per vertex
-b = 100  -- minimize color index
+b = 100 -- minimize color index
 c = 250 -- neighbors different colors
 
 dt = 0.075

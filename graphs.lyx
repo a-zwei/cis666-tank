@@ -60,7 +60,7 @@ Problem
 
 \begin_layout Standard
 The neural network colors graphs such that no neighboring nodes are the
- same color.
+ same color, using (hopefully) a minimal number of colors.
 \end_layout
 
 \begin_layout Section*
@@ -72,7 +72,12 @@ The
 \family typewriter
 GraphColor
 \family default
- module implements the graph-coloring Hopfield-Tank network.
+ module implements the graph-coloring Hopfield-Tank network using one neuron
+ for each 
+\begin_inset Formula $\left(node,\, color\right)$
+\end_inset
+
+ pair.
 \end_layout
 
 \begin_layout Standard
@@ -105,15 +110,15 @@ The
 \family typewriter
 UGraph
 \family default
- module simplifies and adds some features to the 
+ module simplifies and adds some features to the
 \family typewriter
+
+\begin_inset Newline newline
+\end_inset
+
 Data.Graph.Inductive
 \family default
- module (from 
-\family typewriter
-http://hackage.haskell.org/package/fgl
-\family default
-).
+ module.
 \end_layout
 
 \begin_layout Section*
@@ -160,7 +165,9 @@ Results
 \family typewriter
 colorgraph
 \family default
- usually runs pretty quickly, but not always.
+ often finishes quickly, but not always: graphs A and B took under a second
+ of real time to color, graph C took about fifteen seconds, and some took
+ took long enough that I terminated the program and used a new graph.
  Here is a selection of random graphs, colored and converted to images via
  Graphviz (
 \family typewriter
@@ -177,6 +184,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename graphA.png
 	scale 50
@@ -221,16 +229,17 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename graphB.png
-	scale 40
+	scale 38
 
 \end_inset
 
 
 \begin_inset Graphics
 	filename graphB2.png
-	scale 40
+	scale 38
 
 \end_inset
 
@@ -261,9 +270,10 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename graphC.png
-	scale 50
+	scale 45
 
 \end_inset
 
@@ -301,6 +311,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename graphD.png
 	scale 50
@@ -308,32 +319,9 @@ status open
 \end_inset
 
 
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Graph D
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
 \begin_inset Graphics
 	filename graphE.png
-	scale 50
+	scale 45
 
 \end_inset
 
@@ -344,13 +332,60 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Graph E
+Graphs D and E
 \end_layout
 
 \end_inset
 
 
 \end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Equations of Motion and Energy
+\end_layout
+
+\begin_layout Standard
+The equation of motion was devised so as to (a) choose one color per node,
+ (b) minimize the chosen color number, and (c) avoid choosing a color used
+ by a neighbor.
+\begin_inset Formula \[
+\frac{du_{nc}}{dt}=-u_{nc}-A\left(\sum_{c'}V_{nc'}-1\right)-B\left(j-1\right)-C\left(\sum_{n'}e_{nn'}V_{n'c}-1\right)\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The energy function was then derived from the equation of motion.
+\begin_inset Formula \[
+E=A\left(\sum_{n}\sum_{c}\sum_{c'\neq c}V_{nc'}V_{nc}+V_{nc}\right)+B\left(\sum_{n}\sum_{c}\left(j+1\right)V_{nc}\right)+\]
+
+\end_inset
+
+
+\begin_inset Formula \[
+C\left(\sum_{n}\sum_{c}\sum_{n'\neq n}e_{nn'}V_{n'c}V_{nc}+V_{nc}\right)\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula \begin{eqnarray*}
+V_{nc} & = & \begin{cases}
+1 & \textrm{if node }n\textrm{ is color }c\\
+0 & \textrm{otherwise}\end{cases}\\
+e_{nn'} & = & \begin{cases}
+1 & \textrm{if nodes }n\textrm{ and }n'\textrm{ are neighbors}\\
+0 & \textrm{otherwise}\end{cases}\end{eqnarray*}
 
 \end_inset
 
@@ -424,7 +459,7 @@ import Util
 
 \begin_layout Plain Layout
 
-a = 250 -- one color per vertex
+a = 250 -- one color per node
 \end_layout
 
 \begin_layout Plain Layout
@@ -585,12 +620,12 @@ dudt g s (node, color) = -(us s ! (node, color)) - fromIntegral
 
 \begin_layout Plain Layout
 
-  (a * oneColorPerVertex + b * minimizeColor + c * noSameColorConnected)
+  (a * oneColorPerNode + b * minimizeColor + c * noSameColorConnected)
 \end_layout
 
 \begin_layout Plain Layout
 
-  where oneColorPerVertex = sum (nodeVs s node) - 1
+  where oneColorPerNode = sum (nodeVs s node) - 1
 \end_layout
 
 \begin_layout Plain Layout

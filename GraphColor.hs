@@ -1,4 +1,4 @@
-module GraphColor (Color, randomState, colorGraph) where
+module GraphColor (Color, colorGraph, nodeColor, randomState, State) where
 
 import Data.Array.Unboxed
 import Data.List (delete, sortBy)
@@ -7,11 +7,11 @@ import System.Random
 import UGraph
 import Util
 
-a = 200 -- one color per vertex
-b = 50  -- minimize color index
+a = 250 -- one color per vertex
+b = 100  -- minimize color index
 c = 250 -- neighbors different colors
 
-dt = 0.1
+dt = 0.075
 
 type Color = Int -- Node is also Int (from Graph)
 
@@ -72,21 +72,29 @@ randomState nodes colors seed =
 nodeColors :: State -> [(Node, Color)]
 nodeColors s = [(n, c) | n <- nodeIxs s, c <- colorIxs s, vs s ! (n, c) == 1]
 
+nodeColor :: State -> Node -> Color
+nodeColor s n = fromJust (lookup n $ nodeColors s)
+
 allColored :: State -> Bool
 allColored s = all (/= Nothing) [lookup n $ nodeColors s | n <- nodeIxs s]
 
+neighborColors :: UGraph -> State -> Node -> [Color]
+neighborColors g s node = [nodeColor s n | n <- neighbors g node]
+
+neighborsDiffer :: UGraph -> State -> Bool
+neighborsDiffer g s = not $ or [nodeColor s n `elem` neighborColors g s n |
+  n <- nodes g]
+
 localMin :: Ord a => [a] -> Int
-localMin ns = findLow' ns 0
-  where findLow' (n:ns) ix = if (head ns) > n then ix else findLow' ns (ix + 1)
+localMin ns = f ns 0
+  where f (n:ns) ix = if (head ns) > n then ix else f ns (ix + 1)
 
 nextMin :: Ord a => Int -> [a] -> Int
 nextMin ix ns = 1 + ix + (localMin $ drop (ix + 1) ns)
 
-pickSolution :: UGraph -> Int -> Int -> State
-pickSolution g colors seed = solutions !! localMin energies
-  where energies = map (energy g) solutions
-        solutions = filter allColored $ iterate (update g) initialState
-        initialState = randomState (noNodes g) colors seed
-
-colorGraph :: UGraph -> Int -> Int -> [(Node, Color)]
-colorGraph g colors seed = nodeColors $ pickSolution g colors seed
+colorGraph :: UGraph -> Int -> State
+colorGraph g seed = states !! localMin energies
+  where initialState = randomState (noNodes g) (noNodes g) seed
+        states = filter valid $ iterate (update g) initialState
+        energies = map (energy g) states
+        valid s = allColored s && neighborsDiffer g s

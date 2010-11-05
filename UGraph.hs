@@ -1,4 +1,4 @@
-module UGraph (edges, Node, nodes, noNodes, -- Graph re-exports
+module UGraph (edges, neighbors, Node, nodes, noNodes, -- Graph re-exports
   UGraph, cv, randomGraph, showGraph, readGraph, saveGraph, loadGraph, unique)
 where
 

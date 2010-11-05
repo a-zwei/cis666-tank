@@ -35,5 +35,6 @@ loadGraph file = do
 
 unique :: [Edge] -> [Edge]
 unique [e] = [e]
-unique ((i, j):es) = if (i, j) `elem` es || (j, i) `elem` es then unique es else
-  (i, j) : unique es
+unique ((i, j):es) = if (i, j) `elem` es || (j, i) `elem` es
+  then unique es
+  else (i, j) : unique es

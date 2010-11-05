@@ -1,39 +1,30 @@
-module GraphColor where
+module GraphColor (Color, randomState, colorGraph) where
 
-import Data.Array.IArray
-import Data.Graph.Inductive
+import Data.Array.Unboxed
 import Data.List (delete, sortBy)
 import System.Random
 
-data State = State { us :: Array (Int, Int) Float }
+import UGraph
+import Util
+
+a = 10
+b = 1
+c = 20
+
+dt = 0.01
+
+type Color = Int -- Node is also Int (from Graph)
+
+data State = State { us :: Array (Node, Color) Float }
   deriving (Read, Show, Eq)
 
-type UGraph = Gr () ()
-
-randomArray :: (Ix i, Random a) => (i, i) -> (a, a) -> Int -> Array i a
-randomArray bounds range seed = listArray bounds $ randomRs range g
-  where g = mkStdGen seed
-
-sampleA = State $ randomArray ((1,1),(6,3)) (-0.5, 0.5) 1
-
-randomGraph :: Int -> Int -> Int -> UGraph
-randomGraph nodes edges seed = undir $ mkUGraph [1..nodes] $ take edges rEdges
-  where rEdges = filter (\(i,j) -> i /= j) $ zip rNodes (tail rNodes)
-        rNodes = randomRs (1, nodes) (mkStdGen seed)
-
-boolToInt True = 1
-boolToInt False = 0
-
-vs :: State -> Array (Int, Int) Int
+vs :: State -> Array (Node, Color) Int
 vs s = amap (boolToInt . (>= 0)) (us s)
 
-cv :: UGraph -> (Node, Node) -> Int
-cv g (i, j) = boolToInt $ j `elem` neighbors g i
-
-nodeBounds :: State -> (Int, Int)
+nodeBounds :: State -> (Node, Node)
 nodeBounds s = (\((i,_),(j,_)) -> (i, j)) $ bounds (us s)
 
-colorBounds :: State -> (Int, Int)
+colorBounds :: State -> (Color, Color)
 colorBounds s = (\((_,i),(_,j)) -> (i, j)) $ bounds (us s)
 
 nodeIxs :: State -> [Int]
@@ -46,12 +37,6 @@ nodeVs :: State -> Int -> [Int]
 nodeVs s n = [vs s ! (n, c) | c <- colorIxs s]
 
 colorVs s c = [vs s ! (n, c) | n <- nodeIxs s]
-
-a = 10
-b = 1
-c = 20
-
-dt = 0.01
 
 dudt :: UGraph -> State -> (Int, Int) -> Float
 dudt g s (node, color) = -(us s ! (node, color)) - fromIntegral
@@ -72,6 +57,28 @@ energy g s = fromIntegral $ a * aTerm + b * bTerm + c * cTerm
           k <- delete i $ nodeIxs s] + (vs s ! (i, j)) |
             i <- nodeIxs s, j <- colorIxs s]
 
-iterate :: UGraph -> State -> State
-iterate g s = State $ array (bounds $ us s) (map updateU $ assocs (us s))
+update :: UGraph -> State -> State
+update g s = State $ array (bounds $ us s) (map updateU $ assocs (us s))
   where updateU ((i, j), u) = ((i, j), u + dt * dudt g s (i, j))
+
+randomArray :: (Ix i, Random a) => (i, i) -> (a, a) -> Int -> Array i a
+randomArray bounds range seed = listArray bounds $ randomRs range g
+  where g = mkStdGen seed
+
+randomState :: Int -> Int -> Int -> State
+randomState nodes colors seed =
+  State $ randomArray ((1, 1), (nodes, colors)) (-0.5, 0.5) seed
+
+localMin :: [Float] -> Int
+localMin (n:ns) = findLow' 0
+  where findLow' ix = if (head ns) > n then ix else findLow' (ix + 1)
+
+pickSolution :: UGraph -> [State] -> State
+pickSolution g states = states !! localMin energies
+  where energies = map (energy g) states
+
+colorGraph :: UGraph -> Int -> Int -> [(Node, Color)]
+colorGraph g colors seed =
+  [(n, c) | n <- nodeIxs s, c <- colorIxs s, vs s ! (n, c) == 1]
+  where s = pickSolution g $ iterate (update g) initialState
+        initialState = randomState (length $ nodes g) colors seed

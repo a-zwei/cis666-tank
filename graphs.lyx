@@ -1,0 +1,1366 @@
+#LyX 1.6.7 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\language english
+\inputencoding auto
+\font_roman beraserif
+\font_sans berasans
+\font_typewriter beramono
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Hopfield-Tank Network
+\end_layout
+
+\begin_layout Author
+by Fred Maurer
+\end_layout
+
+\begin_layout Date
+2010-11-05
+\end_layout
+
+\begin_layout Section*
+Problem
+\end_layout
+
+\begin_layout Standard
+The neural network colors graphs such that no neighboring nodes are the
+ same color.
+\end_layout
+
+\begin_layout Section*
+Implementation
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+GraphColor
+\family default
+ module implements the graph-coloring Hopfield-Tank network.
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+randomgraph
+\family default
+ program creates a random graph with a given number of nodes and edges.
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+colorgraph
+\family default
+ program colors the graph in the specified file and prints a Graphviz-compatible
+ (DOT language) colored graph.
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+Util
+\family default
+ module contains a couple utilitiy functions.
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+UGraph
+\family default
+ module simplifies and adds some features to the 
+\family typewriter
+Data.Graph.Inductive
+\family default
+ module (from 
+\family typewriter
+http://hackage.haskell.org/package/fgl
+\family default
+).
+\end_layout
+
+\begin_layout Section*
+Usage Example
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+$ ./randomgraph 10 15 > graphA
+\end_layout
+
+\begin_layout Plain Layout
+
+$ ./colorgraph graphA > graphA.dot
+\end_layout
+
+\begin_layout Plain Layout
+
+$ neato graphA.dot -Tpng > graphA.png
+\end_layout
+
+\begin_layout Plain Layout
+
+$ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Results
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+colorgraph
+\family default
+ usually runs pretty quickly, but not always.
+ Here is a selection of random graphs, colored and converted to images via
+ Graphviz (
+\family typewriter
+neato
+\family default
+).
+ Unconnected nodes have been omitted.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename graphA.png
+	scale 50
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename graphA2.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Graph A, two colorings
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename graphB.png
+	scale 40
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename graphB2.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Graph B, two colorings
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename graphC.png
+	scale 50
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename graphC2.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Graph C, two colorings
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename graphD.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Graph D
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename graphE.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Graph E
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Code
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},breaklines=true,numbers=left"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+GraphColor.hs
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+module GraphColor (Color, colorGraph, nodeColor, randomState, State) where
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import Data.Array.Unboxed
+\end_layout
+
+\begin_layout Plain Layout
+
+import Data.List (delete, sortBy)
+\end_layout
+
+\begin_layout Plain Layout
+
+import System.Random
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import UGraph
+\end_layout
+
+\begin_layout Plain Layout
+
+import Util
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+a = 250 -- one color per vertex
+\end_layout
+
+\begin_layout Plain Layout
+
+b = 100 -- minimize color index
+\end_layout
+
+\begin_layout Plain Layout
+
+c = 250 -- neighbors different colors
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+dt = 0.075
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+type Color = Int -- Node is also Int (from Graph)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+data State = State { us :: Array (Node, Color) Float }
+\end_layout
+
+\begin_layout Plain Layout
+
+  deriving (Read, Show, Eq)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+vs :: State -> Array (Node, Color) Int
+\end_layout
+
+\begin_layout Plain Layout
+
+vs s = amap (boolToInt .
+ (>= 0)) (us s)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+nodeBounds :: State -> (Node, Node)
+\end_layout
+
+\begin_layout Plain Layout
+
+nodeBounds s = (
+\backslash
+((i,_),(j,_)) -> (i, j)) $ bounds (us s)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+colorBounds :: State -> (Color, Color)
+\end_layout
+
+\begin_layout Plain Layout
+
+colorBounds s = (
+\backslash
+((_,i),(_,j)) -> (i, j)) $ bounds (us s)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+nodeIxs :: State -> [Node]
+\end_layout
+
+\begin_layout Plain Layout
+
+nodeIxs = range .
+ nodeBounds
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+colorIxs :: State -> [Color]
+\end_layout
+
+\begin_layout Plain Layout
+
+colorIxs = range .
+ colorBounds
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+nodeVs :: State -> Int -> [Int]
+\end_layout
+
+\begin_layout Plain Layout
+
+nodeVs s n = [vs s ! (n, c) | c <- colorIxs s]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+colorVs s c = [vs s ! (n, c) | n <- nodeIxs s]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+dudt :: UGraph -> State -> (Int, Int) -> Float
+\end_layout
+
+\begin_layout Plain Layout
+
+dudt g s (node, color) = -(us s ! (node, color)) - fromIntegral
+\end_layout
+
+\begin_layout Plain Layout
+
+  (a * oneColorPerVertex + b * minimizeColor + c * noSameColorConnected)
+\end_layout
+
+\begin_layout Plain Layout
+
+  where oneColorPerVertex = sum (nodeVs s node) - 1
+\end_layout
+
+\begin_layout Plain Layout
+
+        minimizeColor = color - (fst $ colorBounds s)
+\end_layout
+
+\begin_layout Plain Layout
+
+        noSameColorConnected =
+\end_layout
+
+\begin_layout Plain Layout
+
+          sum [cv g (node, j) * (vs s ! (j, color)) | j <- nodeIxs s] -
+ 1
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+energy :: UGraph -> State -> Float
+\end_layout
+
+\begin_layout Plain Layout
+
+energy g s = fromIntegral $ a * aTerm + b * bTerm + c * cTerm
+\end_layout
+
+\begin_layout Plain Layout
+
+  where aTerm = sum [sum [(vs s ! (i, k)) * (vs s ! (i, j)) |
+\end_layout
+
+\begin_layout Plain Layout
+
+          k <- delete j $ colorIxs s] + (vs s ! (i, j)) |
+\end_layout
+
+\begin_layout Plain Layout
+
+            i <- nodeIxs s, j <- colorIxs s]
+\end_layout
+
+\begin_layout Plain Layout
+
+        bTerm = sum [(j + 1) * (vs s ! (i, j)) |
+\end_layout
+
+\begin_layout Plain Layout
+
+          i <- nodeIxs s, j <- colorIxs s]
+\end_layout
+
+\begin_layout Plain Layout
+
+        cTerm = sum [sum [cv g (i, k) * (vs s ! (k, j)) * (vs s ! (i, j))
+ |
+\end_layout
+
+\begin_layout Plain Layout
+
+          k <- delete i $ nodeIxs s] + (vs s ! (i, j)) |
+\end_layout
+
+\begin_layout Plain Layout
+
+            i <- nodeIxs s, j <- colorIxs s]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+update :: UGraph -> State -> State
+\end_layout
+
+\begin_layout Plain Layout
+
+update g s = State $ array (bounds $ us s) (map updateU $ assocs (us s))
+\end_layout
+
+\begin_layout Plain Layout
+
+  where updateU ((i, j), u) = ((i, j), u + dt * dudt g s (i, j))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+randomArray :: (Ix i, Random a) => (i, i) -> (a, a) -> Int -> Array i a
+\end_layout
+
+\begin_layout Plain Layout
+
+randomArray bounds range seed = listArray bounds $ randomRs range g
+\end_layout
+
+\begin_layout Plain Layout
+
+  where g = mkStdGen seed
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+randomState :: Int -> Int -> Int -> State
+\end_layout
+
+\begin_layout Plain Layout
+
+randomState nodes colors seed =
+\end_layout
+
+\begin_layout Plain Layout
+
+  State $ randomArray ((1, 1), (nodes, colors)) (-0.5, 0.5) seed
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+nodeColors :: State -> [(Node, Color)]
+\end_layout
+
+\begin_layout Plain Layout
+
+nodeColors s = [(n, c) | n <- nodeIxs s, c <- colorIxs s, vs s ! (n, c)
+ == 1]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+nodeColor :: State -> Node -> Color
+\end_layout
+
+\begin_layout Plain Layout
+
+nodeColor s n = fromJust (lookup n $ nodeColors s)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+allColored :: State -> Bool
+\end_layout
+
+\begin_layout Plain Layout
+
+allColored s = all (/= Nothing) [lookup n $ nodeColors s | n <- nodeIxs
+ s]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+neighborColors :: UGraph -> State -> Node -> [Color]
+\end_layout
+
+\begin_layout Plain Layout
+
+neighborColors g s node = [nodeColor s n | n <- neighbors g node]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+neighborsDiffer :: UGraph -> State -> Bool
+\end_layout
+
+\begin_layout Plain Layout
+
+neighborsDiffer g s = not $ or [nodeColor s n `elem` neighborColors g s
+ n |
+\end_layout
+
+\begin_layout Plain Layout
+
+  n <- nodes g]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+localMin :: Ord a => [a] -> Int
+\end_layout
+
+\begin_layout Plain Layout
+
+localMin ns = f ns 0
+\end_layout
+
+\begin_layout Plain Layout
+
+  where f (n:ns) ix = if (head ns) > n then ix else f ns (ix + 1)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+nextMin :: Ord a => Int -> [a] -> Int
+\end_layout
+
+\begin_layout Plain Layout
+
+nextMin ix ns = 1 + ix + (localMin $ drop (ix + 1) ns)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+colorGraph :: UGraph -> Int -> State
+\end_layout
+
+\begin_layout Plain Layout
+
+colorGraph g seed = states !! localMin energies
+\end_layout
+
+\begin_layout Plain Layout
+
+  where initialState = randomState (noNodes g) (noNodes g) seed
+\end_layout
+
+\begin_layout Plain Layout
+
+        states = filter valid $ iterate (update g) initialState
+\end_layout
+
+\begin_layout Plain Layout
+
+        energies = map (energy g) states
+\end_layout
+
+\begin_layout Plain Layout
+
+        valid s = allColored s && neighborsDiffer g s
+\end_layout
+
+\end_inset
+
+
+\lyxline
+
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},breaklines=true,numbers=left"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+UGraph.hs
+\end_layout
+
+\end_inset
+
+module UGraph (edges, neighbors, Node, nodes, noNodes, -- Graph re-exports
+\end_layout
+
+\begin_layout Plain Layout
+
+  UGraph, cv, randomGraph, showGraph, readGraph, saveGraph, loadGraph, unique)
+\end_layout
+
+\begin_layout Plain Layout
+
+where
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import Control.Monad
+\end_layout
+
+\begin_layout Plain Layout
+
+import Data.Graph.Inductive
+\end_layout
+
+\begin_layout Plain Layout
+
+import System.Random
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import Util
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+type UGraph = Gr () ()
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+cv :: UGraph -> (Node, Node) -> Int
+\end_layout
+
+\begin_layout Plain Layout
+
+cv g (i, j) = boolToInt $ j `elem` neighbors g i
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+randomGraph :: Int -> Int -> Int -> UGraph
+\end_layout
+
+\begin_layout Plain Layout
+
+randomGraph nodes edges seed = mkUGraph [1..nodes] $ take edges rEdges
+\end_layout
+
+\begin_layout Plain Layout
+
+  where rEdges = filter (
+\backslash
+(i,j) -> i /= j) $ zip rNodes (tail rNodes)
+\end_layout
+
+\begin_layout Plain Layout
+
+        rNodes = randomRs (1, nodes) (mkStdGen seed)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+showGraph :: UGraph -> String
+\end_layout
+
+\begin_layout Plain Layout
+
+showGraph g = show (nodes g, edges g)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+readGraph :: String -> UGraph
+\end_layout
+
+\begin_layout Plain Layout
+
+readGraph s = mkUGraph nodes edges
+\end_layout
+
+\begin_layout Plain Layout
+
+  where (nodes, edges) = read s
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+saveGraph :: UGraph -> FilePath -> IO ()
+\end_layout
+
+\begin_layout Plain Layout
+
+saveGraph g file = writeFile file $ show (nodes g, edges g)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+loadGraph :: FilePath -> IO UGraph
+\end_layout
+
+\begin_layout Plain Layout
+
+loadGraph file = do
+\end_layout
+
+\begin_layout Plain Layout
+
+  (nodes, edges) <- liftM read $ readFile file
+\end_layout
+
+\begin_layout Plain Layout
+
+  return $ mkUGraph nodes edges
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+unique :: [Edge] -> [Edge]
+\end_layout
+
+\begin_layout Plain Layout
+
+unique [e] = [e]
+\end_layout
+
+\begin_layout Plain Layout
+
+unique ((i, j):es) = if (i, j) `elem` es || (j, i) `elem` es
+\end_layout
+
+\begin_layout Plain Layout
+
+  then unique es
+\end_layout
+
+\begin_layout Plain Layout
+
+  else (i, j) : unique es
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lyxline
+
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},breaklines=true,numbers=left"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Util.hs
+\end_layout
+
+\end_inset
+
+module Util (boolToInt, fromJust) where
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+boolToInt True = 1
+\end_layout
+
+\begin_layout Plain Layout
+
+boolToInt False = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+fromJust (Just a) = a
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lyxline
+
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},breaklines=true,numbers=left"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+colorgraph.hs
+\end_layout
+
+\end_inset
+
+module Main where
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import System.Environment
+\end_layout
+
+\begin_layout Plain Layout
+
+import System.Random
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import GraphColor
+\end_layout
+
+\begin_layout Plain Layout
+
+import UGraph
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+colorNames = ["chocolate", "crimson", "cornflowerblue", "darkgreen",
+\end_layout
+
+\begin_layout Plain Layout
+
+          "peachpuff", "goldenrod", "orange", "deeppink", "indigo", "olivedrab",
+\end_layout
+
+\begin_layout Plain Layout
+
+          "palegreen", "orchid", "palegreen", "royalblue", "slategrey",
+\end_layout
+
+\begin_layout Plain Layout
+
+          "yellow", "wheat", "tan", "thistle", "tomato", "turquoise"]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+neato :: UGraph -> State -> String
+\end_layout
+
+\begin_layout Plain Layout
+
+neato g s = "graph {" ++ concat nodeColors ++ concat edgeLines ++ "
+\backslash
+n}"
+\end_layout
+
+\begin_layout Plain Layout
+
+  where edgeLines = map fmtEdge $ unique (edges g)
+\end_layout
+
+\begin_layout Plain Layout
+
+        nodeColors = map fmtColor $ nodes g
+\end_layout
+
+\begin_layout Plain Layout
+
+        fmtEdge (i, j) = "
+\backslash
+n  " ++ show i ++ " -- " ++ show j
+\end_layout
+
+\begin_layout Plain Layout
+
+        fmtColor n = "
+\backslash
+n" ++ show n ++  " [style=filled fillcolor=
+\backslash
+"" ++
+\end_layout
+
+\begin_layout Plain Layout
+
+          (colorNames !! nodeColor s n ) ++ "
+\backslash
+"]"
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+main = do
+\end_layout
+
+\begin_layout Plain Layout
+
+  [graphFile] <- getArgs
+\end_layout
+
+\begin_layout Plain Layout
+
+  g <- loadGraph graphFile
+\end_layout
+
+\begin_layout Plain Layout
+
+  seed <- randomIO
+\end_layout
+
+\begin_layout Plain Layout
+
+  putStrLn $ neato g (colorGraph g seed)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lyxline
+
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},breaklines=true,numbers=left"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+randomgraph.hs
+\end_layout
+
+\end_inset
+
+module Main where
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import System.Environment
+\end_layout
+
+\begin_layout Plain Layout
+
+import System.Random
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import UGraph
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+main = do
+\end_layout
+
+\begin_layout Plain Layout
+
+  [sNodes, sEdges] <- getArgs
+\end_layout
+
+\begin_layout Plain Layout
+
+  seed <- randomIO
+\end_layout
+
+\begin_layout Plain Layout
+
+  putStrLn $ showGraph (randomGraph (read sNodes) (read sEdges) seed)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

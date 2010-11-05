@@ -7,11 +7,11 @@ import System.Random
 import UGraph
 import Util
 
-a = 10
-b = 1
-c = 20
+a = 200 -- one color per vertex
+b = 50  -- minimize color index
+c = 250 -- neighbors different colors
 
-dt = 0.01
+dt = 0.1
 
 type Color = Int -- Node is also Int (from Graph)
 
@@ -27,10 +27,10 @@ nodeBounds s = (\((i,_),(j,_)) -> (i, j)) $ bounds (us s)
 colorBounds :: State -> (Color, Color)
 colorBounds s = (\((_,i),(_,j)) -> (i, j)) $ bounds (us s)
 
-nodeIxs :: State -> [Int]
+nodeIxs :: State -> [Node]
 nodeIxs = range . nodeBounds
 
-colorIxs :: State -> [Int]
+colorIxs :: State -> [Color]
 colorIxs = range . colorBounds
 
 nodeVs :: State -> Int -> [Int]
@@ -69,16 +69,24 @@ randomState :: Int -> Int -> Int -> State
 randomState nodes colors seed =
   State $ randomArray ((1, 1), (nodes, colors)) (-0.5, 0.5) seed
 
-localMin :: [Float] -> Int
-localMin (n:ns) = findLow' 0
-  where findLow' ix = if (head ns) > n then ix else findLow' (ix + 1)
+nodeColors :: State -> [(Node, Color)]
+nodeColors s = [(n, c) | n <- nodeIxs s, c <- colorIxs s, vs s ! (n, c) == 1]
 
-pickSolution :: UGraph -> [State] -> State
-pickSolution g states = states !! localMin energies
-  where energies = map (energy g) states
+allColored :: State -> Bool
+allColored s = all (/= Nothing) [lookup n $ nodeColors s | n <- nodeIxs s]
+
+localMin :: Ord a => [a] -> Int
+localMin ns = findLow' ns 0
+  where findLow' (n:ns) ix = if (head ns) > n then ix else findLow' ns (ix + 1)
+
+nextMin :: Ord a => Int -> [a] -> Int
+nextMin ix ns = 1 + ix + (localMin $ drop (ix + 1) ns)
+
+pickSolution :: UGraph -> Int -> Int -> State
+pickSolution g colors seed = solutions !! localMin energies
+  where energies = map (energy g) solutions
+        solutions = filter allColored $ iterate (update g) initialState
+        initialState = randomState (noNodes g) colors seed
 
 colorGraph :: UGraph -> Int -> Int -> [(Node, Color)]
-colorGraph g colors seed =
-  [(n, c) | n <- nodeIxs s, c <- colorIxs s, vs s ! (n, c) == 1]
-  where s = pickSolution g $ iterate (update g) initialState
-        initialState = randomState (length $ nodes g) colors seed
+colorGraph g colors seed = nodeColors $ pickSolution g colors seed

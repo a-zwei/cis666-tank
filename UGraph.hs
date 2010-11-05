@@ -1,5 +1,5 @@
-module UGraph (Node, nodes, edges, -- re-exports from Data.Graph.Inductive
-  UGraph, cv, randomGraph, saveGraph, loadGraph, unique)
+module UGraph (edges, Node, nodes, noNodes, -- Graph re-exports
+  UGraph, cv, randomGraph, showGraph, readGraph, saveGraph, loadGraph, unique)
 where
 
 import Control.Monad
@@ -17,6 +17,13 @@ randomGraph :: Int -> Int -> Int -> UGraph
 randomGraph nodes edges seed = mkUGraph [1..nodes] $ take edges rEdges
   where rEdges = filter (\(i,j) -> i /= j) $ zip rNodes (tail rNodes)
         rNodes = randomRs (1, nodes) (mkStdGen seed)
+
+showGraph :: UGraph -> String
+showGraph g = show (nodes g, edges g)
+
+readGraph :: String -> UGraph
+readGraph s = mkUGraph nodes edges
+  where (nodes, edges) = read s
 
 saveGraph :: UGraph -> FilePath -> IO ()
 saveGraph g file = writeFile file $ show (nodes g, edges g)

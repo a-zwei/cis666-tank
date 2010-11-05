@@ -7,7 +7,7 @@ import System.Random
 import UGraph
 import Util
 
-a = 250 -- one color per vertex
+a = 250 -- one color per node
 b = 100 -- minimize color index
 c = 250 -- neighbors different colors
 
@@ -40,8 +40,8 @@ colorVs s c = [vs s ! (n, c) | n <- nodeIxs s]
 
 dudt :: UGraph -> State -> (Int, Int) -> Float
 dudt g s (node, color) = -(us s ! (node, color)) - fromIntegral
-  (a * oneColorPerVertex + b * minimizeColor + c * noSameColorConnected)
-  where oneColorPerVertex = sum (nodeVs s node) - 1
+  (a * oneColorPerNode + b * minimizeColor + c * noSameColorConnected)
+  where oneColorPerNode = sum (nodeVs s node) - 1
         minimizeColor = color - (fst $ colorBounds s)
         noSameColorConnected =
           sum [cv g (node, j) * (vs s ! (j, color)) | j <- nodeIxs s] - 1
